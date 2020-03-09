@@ -1,0 +1,19 @@
+# NOTE: Replace "C:\\inetpub\\wwwroot\\*" with the path to the target IIS web application
+Rule {
+  Tag "Blocking Changes to Web Directory (Windows)"
+  Class Files
+  ID -1 # This will select the next free ID in the 4XXX series
+  Level 1
+  files { Include "C:\\inetpub\\wwwroot\\*" }
+  directives files:rename files:permissions files:create files:write
+}
+
+# NOTE: Replace "/var/www/html/*" with the path to the target Linux-hosted web application
+Rule {
+  Tag "Blocking Changes to Web Directory (Linux)"
+  Class UNIX_file
+  ID -1 # This will select the next free ID in the 4XXX series
+  Level 1
+  files { Include "/var/www/html/*" }
+  directives unixfile:symlink unixfile:create unixfile:mkdir unixfile:write
+}
