@@ -8,7 +8,7 @@ This repository houses a number of tools and signatures to help defend networks 
 ## Background
 Web shells are malicious files or code snippets that attackers put on compromised web servers to perform arbitrary, attacker-specified actions on the system or return requested data to which the system has access. Web shells are a well-known attacker technique, but they are often difficult to detect because of their proficiency in blending in with an existing web application. 
 
-## Mitigations
+## Detecting/Blocking Web Shells
 ### "Known-Good" file comparison
 The most effective method of discovering most web shells is to compare files on a production web server with a known-good version of that application, typically a fresh install of the application where available updates have been applied. Administrators can programmatically compare the production site with the known-good version to identify added or changed files. These files can be manually reviewed to verify authenticity. NSA provides instructions below on how to perform the file comparison in either a Windows or Linux environment. 
 
@@ -43,26 +43,26 @@ Example: Scanning default Apache website:
 `$ diff -r -q /path/to/good/image/ /var/www/html/`
 
 
-### Detecting anomalous requests in web server logs
+#### Detecting anomalous requests in web server logs
 Because they are often designed to blend in with existing web applications, detecting web shells can be difficult. However, some properties of web shells are difficult to disguise or are commonly overlooked by attackers and can guide defenders to concealed web shells. Of particular interest are the user agent, referrer, and IP address used to access the web shell. 
 + _User agent HTTP header_: Without an established presence within a network, it is unlikely that an attacker will know which user agent strings are common for a particular web server. Therefore, at a minimum, early web shell access is likely to be performed using a user agent that is uncommon on a target network. 
 + _Referrer HTTP header_: For most web applications, each user request is appended with a referrer header indicating the URL from which the user request originated. The major exception to this is root level pages which are often bookmarked or accessed directly. Attackers may overlook the referrer tag when disguising their web shell traffic. If so, these requests should appear anomalous in web server logs. 
 + _IP Addresses_: Depending on the attacker’s tactics and the victim environment, IP addresses used to conduct the attack may appear anomalous. For instance, a web application may primarily be visited by internal users from a particular subnet. However, the attacker may access the web shell malware from an IP address outside the normal subnet. This analytic is likely to produce significant false positives in many environments, so it should be employed cautiously. 
 
-#### Splunk queries for web server logs
+##### Splunk queries for web server logs
 
 NEED THIS
 
-#### PowerShell script for Microsoft IIS logs
+##### PowerShell script for Microsoft IIS logs
 The provided [PowerShell script](https://github.com/nsacyber/Mitigating-Web-Shells/blob/master/checkLogs.ps1) will attempt to identify anomalous entries in IIS web server logs that could indicate the presence of a web shell. The script calculates the URIs successfully handled by the server (status code 200-299) which have been requested by the least number of user agents or IP addresses. This analytic will _always_ produce results regardless of whether a web shell is present or not. The URIs in the results should be verified benign. 
 
-##### Requirements
+###### Requirements
 + PowerShell v2 or greater
 + Full Language Mode of PowerShell enabled (see [here](https://devblogs.microsoft.com/powershell/powershell-constrained-language-mode/))
      + This is the default mode for most systems
 + Read access to IIS logs
 
-##### Usage
+###### Usage
 `PS > .\checkLogs.ps1 -logDir "<path to IIS log directory>"`
 
 Example: Scanning logs stored at the default IIS location:
@@ -70,24 +70,24 @@ Example: Scanning logs stored at the default IIS location:
 
 Additionally, the size of the percentile returned can be modified with the ‘-percentile N’ option. The default is to show URIs in the bottom 5 percentile for unique user agent requests and client IP addresses.
 
-#### Shell script for Apache httpd logs
+##### Shell script for Apache httpd logs
 
 NEED THIS
 
-## Detecting host artifacts of common web shells
+### Detecting host artifacts of common web shells
 Web shells are easy to modify without losing functionality and can thus be tailored to avoid host base signatures such as file artifacts. In rare cases, web shells may even run entirely in memory (i.e., fileless execution) making file based detection impossible. However, attackers may make little to no modifications to web shells for a variety of reasons. In these cases, it may be possible to detect common web shells using pattern matching techniques, such as [YARA rules](https://virustotal.github.io/yara/). YARA rules can be imported by a variety of security products or can be run using a standalone [YARA scanning tool](https://github.com/virustotal/yara/releases/tag/v3.11.0). The instructions below assume use of the standalone YARA scanning tool. For other security products, consult documentation or talk to the vendor to determine if YARA is supported.  
 
-### YARA rules for detecting common web shells
+#### YARA rules for detecting common web shells
 The YARA rules contain a variety of signatures for common web shells and some heuristic approaches to identifying artifacts typically found in web shells. Two sets of signatures are provided, _[core](https://github.com/nsacyber/Mitigating-Web-Shells/blob/master/core.webshell_detection.yara)_ and _[extended](https://github.com/nsacyber/Mitigating-Web-Shells/blob/master/extended.webshell_detection.yara)_.
 + _core_ rules include only indicators for common web shells that are unlikely to occur in benign web application files. These rules should return minimal false positive results but are also less likely to detect variations of common shells
 + _extended_ rules include both indicators for common web shells and indicators of techniques frequently used in web shells, such as obfuscation, dynamic execution, and encoding. Because these techniques are also sometimes used in benign web applications, these rules are likely to produce a significant number of false positive results but are also detect a broader range of web shells. 
 Administrators should prioritize vetting results from the core rules before investigating results from the extended rules. For some applications, the extended rules will result in too many false positives to be useful.
 
-#### Requirements
+##### Requirements
 + a YARA compatible security application or the standalone YARA tool (v3+)
 + file-level, read access to the web directories for the target web application
 
-#### Usage
+##### Usage
 `> .\yara64.exe -r -C <yara file> <path to web directory>`
 
 Example: Scanning default IIS web directories using the base ruleset
@@ -97,15 +97,16 @@ Example: Scanning default Apache web directories using the extended ruleset
 `$ yara -r extended.yara.bin /var/www/html/`
 
 
-## Detecting network artifacts of common web shells
-### Rationale
-### Network signatures for common web shells
+### Detecting network artifacts of common web shells
+#### Rationale
+#### Network signatures for common web shells
 
-## Preventing web shells
+
+## Preventing Web Shells
 ### McAfee HIPS rules to lock down web directories
+Web shells almost always rely on modifying existing web application files or creating new files in a web accessible directory. Using a file integrity monitoring system can block file changes to a specific directory or alert when changes occur. The provided McAfee Host Intrusion Prevention System rules can be tailored for a specific web application to block file system changes that web shell exploitation usually relies on. 
 
-
-
+WORKING HERE
 
 ## License
 
