@@ -1,29 +1,28 @@
 # Mitigating Web Shells
-This repository houses a number of tools and signatures to help defend networks against web shell malware. More information about web shells and the analytics used by the tools here is available in [NSA’s web shell mitigation guidance](https://nsa.gov/*****************************)
+This repository houses a number of tools and signatures to help defend networks against web shell malware. More information about web shells and the analytics used by the tools here is available in [NSA’s web shell mitigation guidance](https://nsa.gov/)
 
 **Table of Contents**
 
 [TOC]
 
 ## Background
-Web shells are malicious files or code snippets that attackers put on compromised web servers to perform arbitrary, attacker-specified actions on the system or return requested data to which the system has access. Web shells are a well known attacker technique, but they are often difficult to detect because of their proficiency in blending in with an existing web application. 
+Web shells are malicious files or code snippets that attackers put on compromised web servers to perform arbitrary, attacker-specified actions on the system or return requested data to which the system has access. Web shells are a well-known attacker technique, but they are often difficult to detect because of their proficiency in blending in with an existing web application. 
 
-[More information here](https://nsa.gov/*****************************)
-
-## "Known-Good" file comparison
+## Mitigations
+### "Known-Good" file comparison
 The most effective method of discovering most web shells is to compare files on a production web server with a known-good version of that application, typically a fresh install of the application where available updates have been applied. Administrators can programmatically compare the production site with the known-good version to identify added or changed files. These files can be manually reviewed to verify authenticity. NSA provides instructions below on how to perform the file comparison in either a Windows or Linux environment. 
 
 #### WinDiff Application
 Microsoft developed a tool called WinDiff that allows file or directory comparison for ASCII files. In most cases, this simple but powerful tool is sufficient for comparing known-good and production images. Details about using this utility are provided by Microsoft [here](https://support.microsoft.com/en-us/help/159214/how-to-use-the-windiff-exe-utility).
 
 #### PowerShell utility for known-good comparison
-The provided PowerShell script will compare two directories, a known-good version and a production image. The script will report any new or modified files in the production version. If a web shell is in the web application, then it will appear on this report. Because of the high likelihood that benign file changes occurring, each result will need to be vetted for authenticity. 
+The provided [PowerShell script](https://github.com/nsacyber/Mitigating-Web-Shells/blob/master/dirComparsion.ps1) will compare two directories, a known-good version and a production image. The script will report any new or modified files in the production version. If a web shell is in the web application, then it will appear on this report. Because of the high likelihood that benign file changes occurring, each result will need to be vetted for authenticity. 
 
-#### Requirements
+##### Requirements
 + PowerShell v2 or greater
 + Read access to both the known-good image and the production image
 
-#### Usage
+##### Usage
 `PS > .\dirComparsion.ps1 -knownGood "<PATH>" -productionImage "<PATH>"`
 
 Example: Scanning default IIS website:
@@ -33,32 +32,37 @@ Example: Scanning default IIS website:
 #### Linux Diff utility for known-good comparison
 Most distributions of Linux include the "diff" utility which compares the contents of files or directories. 
 
-#### Requirements
+##### Requirements
 + diff utility (typically pre-installed on Linux)
 + Read access to both the known-good image and the production image
 
-#### Usage
+##### Usage
 `$ diff -r -q <known-good image> <production image>`
 
 Example: Scanning default Apache website:
 `$ diff -r -q /path/to/good/image/ /var/www/html/`
 
 
-## Detecting anomalous requests in web server logs
+### Detecting anomalous requests in web server logs
 Because they are often designed to blend in with existing web applications, detecting web shells can be difficult. However, some properties of web shells are difficult to disguise or are commonly overlooked by attackers and can guide defenders to concealed web shells. Of particular interest are the user agent, referrer, and IP address used to access the web shell. 
 + _User agent HTTP header_: Without an established presence within a network, it is unlikely that an attacker will know which user agent strings are common for a particular web server. Therefore, at a minimum, early web shell access is likely to be performed using a user agent that is uncommon on a target network. 
 + _Referrer HTTP header_: For most web applications, each user request is appended with a referrer header indicating the URL from which the user request originated. The major exception to this is root level pages which are often bookmarked or accessed directly. Attackers may overlook the referrer tag when disguising their web shell traffic. If so, these requests should appear anomalous in web server logs. 
 + _IP Addresses_: Depending on the attacker’s tactics and the victim environment, IP addresses used to conduct the attack may appear anomalous. For instance, a web application may primarily be visited by internal users from a particular subnet. However, the attacker may access the web shell malware from an IP address outside the normal subnet. This analytic is likely to produce significant false positives in many environments, so it should be employed cautiously. 
 
-### PowerShell script for Microsoft IIS logs
-The provided PowerShell script will attempt to identify anomalous entries in IIS web server logs that could indicate the presence of a web shell. The script calculates the URIs successfully handled by the server (status code 200-299) which have been requested by the least number of user agents or IP addresses. This analytic will _always_ produce results regardless of whether a web shell is present or not. The URIs in the results should be verified benign. 
-#### Requirements
+#### Splunk queries for web server logs
+
+NEED THIS
+
+#### PowerShell script for Microsoft IIS logs
+The provided [PowerShell script](https://github.com/nsacyber/Mitigating-Web-Shells/blob/master/checkLogs.ps1) will attempt to identify anomalous entries in IIS web server logs that could indicate the presence of a web shell. The script calculates the URIs successfully handled by the server (status code 200-299) which have been requested by the least number of user agents or IP addresses. This analytic will _always_ produce results regardless of whether a web shell is present or not. The URIs in the results should be verified benign. 
+
+##### Requirements
 + PowerShell v2 or greater
 + Full Language Mode of PowerShell enabled (see [here](https://devblogs.microsoft.com/powershell/powershell-constrained-language-mode/))
      + This is the default mode for most systems
 + Read access to IIS logs
 
-#### Usage
+##### Usage
 `PS > .\checkLogs.ps1 -logDir "<path to IIS log directory>"`
 
 Example: Scanning logs stored at the default IIS location:
@@ -66,8 +70,7 @@ Example: Scanning logs stored at the default IIS location:
 
 Additionally, the size of the percentile returned can be modified with the ‘-percentile N’ option. The default is to show URIs in the bottom 5 percentile for unique user agent requests and client IP addresses.
 
-### Shell script for Apache httpd logs
-### Splunk queries for web server logs
+#### Shell script for Apache httpd logs
 
 NEED THIS
 
