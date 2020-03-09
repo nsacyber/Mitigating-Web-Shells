@@ -1,0 +1,69 @@
+
+# 1) Unlike benign URIs, web shell URIs are likely to have few user agents
+sourcetype="access_combined"
+| fillnull value=- 'comment("Fill all empty fields with -")'
+| search status>="200" status<="300" uri!=- clientip!=- 'comment("Only successful codes 200-299, eliminate blank URIs and client IPs")'
+| stats min(_time) as start max(_time) as stop dc(useragent) as dc_user_agent values(useragent) as values_user_agent dc(clientip) as dc_src values(clientip) as values_src count by uri 'comment("Find first and last time the grouping was found, number of distinct user agent strings and IP addresses used to access that URI")'
+| convert ctime(start) ctime(stop) 'comment("Convert the times to a readable format")'
+| search dc_src<=5 OR dc_user_agent<=5 'comment("Only URIs with <=5 unique user agents or IP addresses")'
+| table start stop uri dc_user_agent values_user_agent dc_src values_src
+
+sourcetype="iis"
+| fillnull value=- 'comment("Fill all empty fields with -")'
+| search sc_status>="200" sc_status<="300" cs_uri_stem!=- c_ip!=- 'comment("Only successful codes 200-299, eliminate blank URIs and client IPs")'
+| stats min(_time) as start max(_time) as stop dc(cs_User_Agent) as dc_user_agent values(cs_User_Agent) as values_user_agent dc(c_ip) as dc_src values(c_ip) as values_src count by cs_uri_stem 'comment("Find first and last time the grouping was found, number of distinct user agent strings and IP addresses used to access that URI")'
+| convert ctime(start) ctime(stop) 'comment("Convert the times to a readable format")'
+| search dc_src<=5 OR dc_user_agent<=5 'comment("Only URIs with <=5 unique user agents or IP addresses")'
+| table start stop cs_uri_stem dc_user_agent values_user_agent dc_src values_src
+
+
+# 2) Particularly for internal web application, uncommon user agents can indicate web shell activity
+sourcetype="access_combined" 
+| fillnull value=- 'comment("Fill all empty fields with -")'
+| search status>="200" status <"300" `comment("Only looking for successful status codes 200-299")` 
+| stats count by useragent `comment("Group User Agent strings to determine frequency")`
+| sort + count `comment("Sort count in ascending order")`
+| head 10 `comment("Limit results to top 10. This can be changed to add more or fewer results")`
+
+sourcetype="iis" 
+| fillnull value=- 'comment("Fill all empty fields with -")'
+| search sc_status>="200" sc_status<"300" `comment("Only looking for successful status codes 200-299")` 
+| stats count by cs_User_Agent `comment("Group User Agent strings to determine frequency")`
+| sort + count `comment("Sort count in ascending order")`
+| head 10 `comment("Limit results to top 10. This can be changed to add more or fewer results")`
+
+
+# 3) Web shell URIs are likely to have uncommon HTTP referers
+sourcetype="access_combined"
+| fillnull value=- `comment("Fill all empty fields with - (needed to make blank referer fields searchable)")`
+| search status>="200" status<"300" 'comment("Only successful codes 200-299")'
+| stats dc(uri) as dc_URIs values(uri) as All_URIs count by referer 'comment("Counts number of times each URI request is associated with a unique referer")'
+| table referer, All_URIs, dc_URIs
+| sort + dc_URIs 'comment("Sort count in ascending order")'
+| head 10 `comment("Limit results to top 10. This can be changed to add more or fewer results")`
+
+sourcetype="iis" 
+| fillnull value=- `comment("Fill all empty fields with - (needed to make blank referer fields searchable)")`
+| search sc_status>="200" sc_status<"300" 'comment("Only successful codes 200-299")'
+| stats dc(cs_uri_stem) as dc_URIs values(cs_uri_stem) as All_URIs count by cs_Referer 'comment("Counts number of times each URI request is associated with a unique referer")'
+| table cs_Referer, All_URIs, dc_URIs
+| sort + dc_URIs 'comment("Sort count in ascending order")'
+| head 10 `comment("Limit results to top 10. This can be changed to add more or fewer results")`
+
+
+# 4) Web shell URIs are likely to have missing HTTP referers
+sourcetype="access_combined"
+| fillnull value=- 'comment("Fill all empty fields with -(needed to make blank referer fields searchable)")'
+| search status>="200" status<"300" referer=- uri!="/" 'comment("Only successful codes 200-299 and blank referer not from root webpage")'
+| stats count by referer, uri 'comment("Counts number of times each URI request is associated with a unique referer")'
+| table uri, count
+| sort - count 'comment("Sort count in descending order")'
+| head 10 `comment("Limit results to top 10. This can be changed to add more or fewer results")`
+
+sourcetype="iis"
+| fillnull value=- 'comment("Fill all empty fields with - (needed to make blank referer fields searchable)")'
+| search sc_status>="200" sc_status<"300" sc_Referer=- cs_uri_stem="/" 'comment("Only successful codes 200-299 and blank referer not from root webpage")'
+| stats count by cs_Referer, cs_uri_stem 'comment("Counts number of times each URI request is associated with a unique referer")'
+| table cs_uri_stem, count
+| sort - count 'comment("Sort count in descending order")'
+| head 10 `comment("Limit results to top 10. This can be changed to add more or fewer results")`
