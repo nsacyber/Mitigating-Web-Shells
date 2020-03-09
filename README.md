@@ -103,10 +103,14 @@ Example: Scanning default Apache web directories using the extended ruleset
 
 
 ## Preventing Web Shells
-### McAfee HIPS rules to lock down web directories
-Web shells almost always rely on modifying existing web application files or creating new files in a web accessible directory. Using a file integrity monitoring system can block file changes to a specific directory or alert when changes occur. The provided McAfee Host Intrusion Prevention System rules can be tailored for a specific web application to block file system changes that web shell exploitation usually relies on. 
+### McAfee Host Intrusion Prevention System (HIPS) rules to lock down web directories
+Web shells almost always rely on modifying existing web application files or creating new files in a web accessible directory. Using a file integrity monitoring system can block file changes to a specific directory or alert when changes occur. The provided [McAfee Host Intrusion Prevention System rules](https://github.com/nsacyber/Mitigating-Web-Shells/blob/master/hips_file_integrity_rules.txt) can be tailored for a specific web application to block file system changes that web shell exploitation usually relies on. Other file integrity monitoring systems are likely able to accomplish similar blocking as well; consult documentation or seek vendor guidance for other such products. 
 
-WORKING HERE
+#### Requirements
++ McAfee Host Based Security System (HBSS)
+
+#### Usage
+HIPS File integrity rules can be added to HBSS through the ePolicy Orchestrator portal. Before adding the rules, administrators should tailor them the target environment. This is initially done by modifying the "Include" path to target one or more web applications. Then exceptions to the rule can be added on the signature page under the exception rule tab. Exceptions should include things like allowed file extensions of benign file types that the target web application is required to handle (e.g., ".pdf", ".jpg", ".png"). HIPS rules should be added as an Informational alert (Level 1) for logging purposes to help administrators identify possible exceptions to the rule. Once administrators are confident that exceptions have been added, the rule(s) should be changed to Level 4 to block file changes.
 
 ## License
 
