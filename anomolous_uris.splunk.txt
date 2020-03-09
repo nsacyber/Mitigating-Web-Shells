@@ -1,5 +1,5 @@
 
-# 1) Unlike benign URIs, web shell URIs are likely to have few user agents
+# 1) Unlike benign URIs, web shell URIs are likely to have few user agents and IP addresses
 sourcetype="access_combined"
 | fillnull value=- 'comment("Fill all empty fields with -")'
 | search status>="200" status<="300" uri!=- clientip!=- 'comment("Only successful codes 200-299, eliminate blank URIs and client IPs")'
