@@ -71,8 +71,14 @@ Example: Scanning logs stored at the default IIS location:
 Additionally, the size of the percentile returned can be modified with the ‘-percentile N’ option. The default is to show URIs in the bottom 5 percentile for unique user agent requests and client IP addresses.
 
 ##### Shell script for Apache httpd logs
+The provided [Python script](https://github.com/nsacyber/Mitigating-Web-Shells/blob/master/checkLogs.py) will attempt to identify anomalous entries in Apache web server logs that could indicate the presence of a web shell. The script calculates the URIs successfully handled by the server (status code 200-299) which have been requested by the least number of user agents or IP addresses. This analytic will _always_ produce results regardless of whether a web shell is present or not. The URIs in the results should be verified benign. 
 
-NEED THIS
+###### Requirements
++ Python 3
++ Read access to Apache logs
+
+###### Usage
+`$ checkLogs.py "<path to Apache log file>"`
 
 ### Detecting host artifacts of common web shells
 Web shells are easy to modify without losing functionality and can thus be tailored to avoid host base signatures such as file artifacts. In rare cases, web shells may even run entirely in memory (i.e., fileless execution) making file based detection impossible. However, attackers may make little to no modifications to web shells for a variety of reasons. In these cases, it may be possible to detect common web shells using pattern matching techniques, such as [YARA rules](https://virustotal.github.io/yara/). YARA rules can be imported by a variety of security products or can be run using a standalone [YARA scanning tool](https://github.com/virustotal/yara/releases/tag/v3.11.0). The instructions below assume use of the standalone YARA scanning tool. For other security products, consult documentation or talk to the vendor to determine if YARA is supported.  
