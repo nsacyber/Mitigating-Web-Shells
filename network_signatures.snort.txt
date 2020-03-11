@@ -1,0 +1,23 @@
+//***************************************************
+// Be sure to put a valid SID in before implementing and test the signature for performance.
+//***************************************************
+
+//These sigantures are targeted at the China Chopper web shell
+//Source: https://www.fireeye.com/blog/threat-research/2013/08/breaking-down-the-china-chopper-web-shell-part-ii.html
+alert tcp $EXTERNAL_NET any -> $HTTP_SERVERS $HTTP_PORTS (msg: "China Chopper with first Command Detected"; flow:to_server,established; content: "FromBase64String"; content: "z1"; content:"POST"; nocase;http_method; reference:url,http://www.fireeye.com/blog/technical/botnet-activities-research/2013/08/breaking-down-the-china-chopper-web-shell-part-i.html; classtype:web-application-attack; sid: 900000101;)
+alert tcp $EXTERNAL_NET any -> $HTTP_SERVERS $HTTP_PORTS (msg: "China Chopper with all Commands Detected"; flow:to_server,established; content: "FromBase64String"; content: "z"; pcre: "/Z\d{1,3}/i"; content:"POST"; nocase;http_method; reference:url,http://www.fireeye.com/blog/technical/botnet-activities-research/2013/08/breaking-down-the-china-chopper-web-shell-part-i.html; classtype:web-application-attack; sid: 900000102;)
+
+//These sigantures are targeted at the C99 web shell
+//Source: https://github.com/jpalanco/alienvault-ossim/blob/master/snort-rules-default-open/rules/2.9.2/emerging.rules/emerging-web_server.rules
+alert tcp $EXTERNAL_NET any -> $HOME_NET $HTTP_PORTS (msg:"ET WEB_SERVER c99 Shell Backdoor Var Override URI"; flow:to_server,established; content:"c99shcook["; nocase; http_uri; fast_pattern:only; pcre:"/[&?]c99shcook\[/Ui"; reference:url,thehackerblog.com/every-c99-php-shell-is-backdoored-aka-free-shells/; classtype:trojan-activity; sid:2018601; rev:1; metadata:created_at 2014_06_24, updated_at 2014_06_24;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET $HTTP_PORTS (msg:"ET WEB_SERVER c99 Shell Backdoor Var Override Cookie"; flow:to_server,established; content:"c99shcook"; nocase; fast_pattern:only; pcre:"/c99shcook/Ci"; reference:url,thehackerblog.com/every-c99-php-shell-is-backdoored-aka-free-shells/; classtype:trojan-activity; sid:2018602; rev:1; metadata:created_at 2014_06_24, updated_at 2014_06_24;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET $HTTP_PORTS (msg:"ET WEB_SERVER c99 Shell Backdoor Var Override Client Body"; flow:to_server,established; content:"c99shcook["; nocase; fast_pattern:only; http_client_body; pcre:"/(?:^|&)c99shcook\[/Pi"; reference:url,thehackerblog.com/every-c99-php-shell-is-backdoored-aka-free-shells/; classtype:trojan-activity; sid:2018603; rev:1; metadata:created_at 2014_06_24, updated_at 2014_06_24;)
+
+//These sigantures are targeted at the R57 web shell
+alert tcp any any -> any any  (msg: “R57 Webshell Detected”; content: “<title>r57 Shell Version “; rev:1; classtype:web-application-attack; sid: 900000201;)
+
+//These sigantures are targeted at the B374k web shell
+alert tcp any any -> any any  (msg: “B374k Webshell Detected”; content: “<title>b374k “; rev:1; classtype:web-application-attack; sid: 900000301;)
+
+//These sigantures are targeted at the WSO web shell
+alert tcp any any -> any any  (msg: “WSO Webshell Detected”; content: “onclick=”g(‘SelfRemove’,null,’’,’’,’’)>Self remove</a> ] “; rev:1; classtype:web-application-attack; sid: 900000401;)
