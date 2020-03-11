@@ -2,8 +2,26 @@
 This repository houses a number of tools and signatures to help defend networks against web shell malware. More information about web shells and the analytics used by the tools here is available in [NSA’s web shell mitigation guidance](https://nsa.gov/)
 
 **Table of Contents**
-
-[TOC]
+- [Mitigating Web Shells](#mitigating-web-shells)
+  * [Background](#background)
+  * [Detecting/Blocking Web Shells](#detecting-blocking-web-shells)
+    + ["Known-Good" file comparison](#-known-good--file-comparison)
+      - [WinDiff Application](#windiff-application)
+      - [PowerShell utility for known-good comparison](#powershell-utility-for-known-good-comparison)
+      - [Linux Diff utility for known-good comparison](#linux-diff-utility-for-known-good-comparison)
+      - [Detecting anomalous requests in web server logs](#detecting-anomalous-requests-in-web-server-logs)
+        * [Splunk queries for web server logs](#splunk-queries-for-web-server-logs)
+        * [PowerShell script for Microsoft IIS logs](#powershell-script-for-microsoft-iis-logs)
+        * [Python script for Apache httpd logs](#python-script-for-apache-httpd-logs)
+    + [Detecting host artifacts of common web shells](#detecting-host-artifacts-of-common-web-shells)
+      - [YARA rules for detecting common web shells](#yara-rules-for-detecting-common-web-shells)
+    + [Detecting network artifacts of common web shell malware](#detecting-network-artifacts-of-common-web-shell-malware)
+      - [Network signatures for common web shell malware](#network-signatures-for-common-web-shell-malware)
+  * [Preventing Web Shells](#preventing-web-shells)
+    + [McAfee Host Intrusion Prevention System (HIPS) rules to lock down web directories](#mcafee-host-intrusion-prevention-system--hips--rules-to-lock-down-web-directories)
+  * [License](#license)
+  * [Contributing](#contributing)
+  * [Disclaimer](#disclaimer)
 
 ## Background
 Web shells are malicious files or code snippets that attackers put on compromised web servers to perform arbitrary, attacker-specified actions on the system or return requested data to which the system has access. Web shells are a well-known attacker technique, but they are often difficult to detect because of their proficiency in blending in with an existing web application. 
@@ -84,7 +102,7 @@ The provided [Python script](https://github.com/nsacyber/Mitigating-Web-Shells/b
 Web shells are easy to modify without losing functionality and can thus be tailored to avoid host base signatures such as file artifacts. In rare cases, web shells may even run entirely in memory (i.e., fileless execution) making file based detection impossible. However, attackers may make little to no modifications to web shells for a variety of reasons. In these cases, it may be possible to detect common web shells using pattern matching techniques, such as [YARA rules](https://virustotal.github.io/yara/). YARA rules can be imported by a variety of security products or can be run using a standalone [YARA scanning tool](https://github.com/virustotal/yara/releases/tag/v3.11.0). The instructions below assume use of the standalone YARA scanning tool. For other security products, consult documentation or talk to the vendor to determine if YARA is supported.  
 
 #### YARA rules for detecting common web shells
-The YARA rules contain a variety of signatures for common web shells and some heuristic approaches to identifying artifacts typically found in web shells. Two sets of signatures are provided, _[core](https://github.com/nsacyber/Mitigating-Web-Shells/blob/master/core.webshell_detection.yara)_ ([compiled core rules](https://github.com/nsacyber/Mitigating-Web-Shells/blob/master/core.yara.bin)) and _[extended](https://github.com/nsacyber/Mitigating-Web-Shells/blob/master/extended.webshell_detection.yara)_ ([compiled extended rules](https://github.com/nsacyber/Mitigating-Web-Shells/blob/master/extended.yara.bin)).
+The YARA rules contain a variety of signatures for common web shells and some heuristic approaches to identifying artifacts typically found in web shells. Two sets of signatures are provided, _[core](https://github.com/nsacyber/Mitigating-Web-Shells/blob/master/core.webshell_detection.yara)_ ([compiled core rules](https://github.com/nsacyber/Mitigating-Web-Shells/blob/master/core.yara.bin)) and _[extended](https://github.com/nsacyber/Mitigating-Web-Shells/blob/master/extended.webshell_detection.yara)_ ([compiled extended rules](https://github.com/nsacyber/Mitigating-Web-Shells/blob/master/extended.yara.bin)). It is recommended to use the compiled versions of the rules as some host-based security systems will falsely flag the uncompiled rules as malicious. 
 + _core_ rules include only indicators for common web shells that are unlikely to occur in benign web application files. These rules should return minimal false positive results but are also less likely to detect variations of common shells
 + _extended_ rules include both indicators for common web shells and indicators of techniques frequently used in web shells, such as obfuscation, dynamic execution, and encoding. Because these techniques are also sometimes used in benign web applications, these rules are likely to produce a significant number of false positive results but are also detect a broader range of web shells. 
 Administrators should prioritize vetting results from the core rules before investigating results from the extended rules. For some applications, the extended rules will result in too many false positives to be useful.
@@ -103,10 +121,11 @@ Example: Scanning default Apache web directories using the extended ruleset
 `$ yara -r extended.yara.bin /var/www/html/`
 
 
-### Detecting network artifacts of common web shells
-#### Rationale
-#### Network signatures for common web shells
+### Detecting network artifacts of common web shell malware
+Web shells frequently use encryption and encoding to evade network-based detection. Additionally, "hard-coded" parameters can easily be modified to further evade signatures. However, if network architectures allow for TLS inspection for web servers (e.g., through a reverse proxy or web application firewall), then administrators may be able to detect unmodified or slightly modified common web shell malware at the network level. Network signatures are, at best, only partially effective at detecting web shells and should be used as one part of a defense-in-depth strategy. 
 
+#### Network signatures for common web shell malware
+The provided [Snort signatures](https://github.com/nsacyber/Mitigating-Web-Shells/blob/master/network_signatures.snort.txt) can be used to detect some common web shells that have not been modified to evade detection. Some intrusion detection/preventions systems and web application firewalls may already implement these or other web shell signatures. Organizations are encouraged to understand their existing network signature posture in this regard. 
 
 ## Preventing Web Shells
 ### McAfee Host Intrusion Prevention System (HIPS) rules to lock down web directories
