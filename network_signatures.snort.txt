@@ -27,7 +27,7 @@ alert tcp any any -> any any  (msg: "B374k Webshell Detected"; content: "<title>
 
 #These sigantures are targeted at the WSO web shell
 # Source: nsa.gov
-alert tcp any any -> any any  (msg: "WSO Webshell Detected"; content: "onclick=\"g('SelfRemove',null,'','','')>Self remove</a> ] "; rev:1; sid: 90000401;)
+alert tcp any any -> any any  (msg: "WSO Webshell Detected"; content: "onclick=\"g('SelfRemove',null,'','','')\">Self remove</a> ]"; rev:1; sid: 90000401;)
 # Source: https://rules.emergingthreatspro.com/9598411999529178/suricata-2.0/rules/web_server.rules
 alert tcp any any -> any any (msg:"ET WEB_SERVER WSO WebShell Activity POST structure 2"; flow:established,to_server; content:"POST"; http_method; content:" name=|22|c|22|"; http_client_body; content:"name=|22|p1|22|"; http_client_body; fast_pattern; pcre:"/name=(?P<q>[\x22\x27])a(?P=q)[^\r\n]*\r\n[\r\n\s]+(?:S(?:e(?:lfRemove|cInfo)|tringTools|afeMode|ql)|(?:Bruteforc|Consol)e|FilesMan|Network|Logout|Php)/Pi"; sid:2016354; rev:2; metadata:created_at 2013_02_05, updated_at 2013_02_05;)
 
