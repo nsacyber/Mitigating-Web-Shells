@@ -199,6 +199,50 @@ Sort-Object -Property value -Unique`
 + wusa.exe
 
 #### Detecting Web Shells in Linux with Auditd
+Auditd is the userspace component of the Linux Auditing System. Auditd can provide users with insight into process creation logs. The information is valuable for indentifying anomalous behavior, such as in the case of malicious web shells. Auditd is available in default repositories for many Linux distrobutions and must be installed and configured before it can log relevant web server process data. Ideally, auditd and other Linux logging should be mirrored to a central Security Information and Event Management (SIEM) server where it can be aggregated and queried. 
+
+The query below will report which applications were launched by an Apache web server process. In many cases, the web application will cause Apache to launch a process for entirely benign functionality. However, there are several applications commonly used by attackers for reconaissance purposes, which are unlikely to be used by a normal web application. Some of these applications are listed below.
+
+##### Configuring Auditd
+1. _Determine the web server uid_:
+After installing auditd (i.e., using "apt -y install auditd"), determine the uid of the web server using: 
+`apachectl -S`
+This will return apache details including the user id in a line such as:
+`User: name="www-data" id=33`
+Here the uid is "33"
+
+2. _Add the following auditd rules (/etc/audit/rules.d/audit.rules) replacing "XX" with the uid identified above_:
+`-a always,exit -F arch=b32 -F uid=XX -S execve -k apacheexecve`
+`-a always,exit -F arch=b64 -F uid=XX -S execve -k apacheexecve`
+
+3. _Restart auditd_:
+`service auditd restart`
+
+##### Reviewing Auditd Log
+1. _Identify applications launched by Apache with_:
+`cat /var/log/auditd/audit.* | grep "apacheexecve"`
+This will return the path to the launched application (see bolded path in the example output below):
+type=SYSCALL msg=audit(1581519503.841:47): arch=c000003e syscall=59 success=yes exit=0 a0=563e412cbbd8 a1=563e412cbb60 a2=563e412cbb78 a3=7f065d5e5810 items=2 ppid=15483 pid=15484 auid=4294967295 uid=33 gid=33 euid=33 suid=33 fsuid=33 egid=33 sgid=33 fsgid=33 tty=(none) ses=4294967295 comm="cat" **exe="/bin/cat"** key="apacheexecve"
+
+2. _Analyze the results to determine if unusual applications are launched (see list below)_
+
+3. _Detailed information, including call arguments, can be obtained using_:
+`/var/log/auditd/audit.* | grep "msg=audit(1581519503.841:47)`
+Replace the valude of msg=audit with the value returned in step #1
+
+##### Linux applications commonly used by attackers and rarely launched by benign Apache applications
++ cat
++ crontab
++ hostname
++ ifconfig
++ ip
++ iptables
++ ls
++ netstat
++ pwd
++ route
++ uname
++ whoami
 
 ## Preventing Web Shells
 ### McAfee Host Intrusion Prevention System (HIPS) rules to lock down web directories
