@@ -9,10 +9,10 @@ This repository houses a number of tools and signatures to help defend networks 
       - [WinDiff Application](#windiff-application)
       - [PowerShell utility for known-good comparison](#powershell-utility-for-known-good-comparison)
       - [Linux Diff utility for known-good comparison](#linux-diff-utility-for-known-good-comparison)
-      - [Detecting anomalous requests in web server logs](#detecting-anomalous-requests-in-web-server-logs)
-        * [Splunk queries for web server logs](#splunk-queries-for-web-server-logs)
-        * [PowerShell script for Microsoft IIS logs](#powershell-script-for-microsoft-iis-logs)
-        * [Python script for Apache httpd logs](#python-script-for-apache-httpd-logs)
+    + [Detecting anomalous requests in web server logs](#detecting-anomalous-requests-in-web-server-logs)
+      - [Splunk queries for web server logs](#splunk-queries-for-web-server-logs)
+      - [PowerShell script for Microsoft IIS logs](#powershell-script-for-microsoft-iis-logs)
+      - [Python script for Apache httpd logs](#python-script-for-apache-httpd-logs)
     + [Detecting host artifacts of common web shells](#detecting-host-artifacts-of-common-web-shells)
       - [YARA rules for detecting common web shells](#yara-rules-for-detecting-common-web-shells)
     + [Detecting network artifacts of common web shell malware](#detecting-network-artifacts-of-common-web-shell-malware)
@@ -66,26 +66,26 @@ Example: Scanning default Apache website:
 `$ diff -r -q /path/to/good/image/ /var/www/html/`
 
 
-#### Detecting anomalous requests in web server logs
+### Detecting anomalous requests in web server logs
 Because they are often designed to blend in with existing web applications, detecting web shells can be difficult. However, some properties of web shells are difficult to disguise or are commonly overlooked by attackers and can guide defenders to concealed web shells. Of particular interest are the user agent, referrer, and IP address used to access the web shell. 
 + _User agent HTTP header_: Without an established presence within a network, it is unlikely that an attacker will know which user agent strings are common for a particular web server. Therefore, at a minimum, early web shell access is likely to be performed using a user agent that is uncommon on a target network. 
 + _Referrer HTTP header_: For most web applications, each user request is appended with a referrer header indicating the URL from which the user request originated. The major exception to this is root level pages, which are often bookmarked or accessed directly. Attackers may overlook the referrer tag when disguising their web shell traffic. If so, these requests should appear anomalous in web server logs. 
 + _IP Addresses_: Depending on the attacker’s tactics and the victim environment, IP addresses used to conduct the attack may appear anomalous. For instance, a web application may primarily be visited by internal users from a particular subnet. However, the attacker may access the web shell malware from an IP address outside the normal subnet. 
 This analytic is likely to produce significant false positives in many environments, so it should be employed cautiously. Additionally, attackers who understand this analytic can easily avoid detection. Therefore, this analytic should only be one part of a broader defense in depth approach to mitigating web shells. 
 
-##### Splunk queries for web server logs
+#### Splunk queries for web server logs
 The provided [Splunk queries](https://github.com/nsacyber/Mitigating-Web-Shells/blob/master/anomolous_uris.splunk.txt) can help to identify Uniform Resource Identifiers (URIs) accessed by few User Agents, IP addresses, or using uncommon Referer [sic] headers. Results of these queries are likely to include mostly or entirely benign URIs. However, if a web shell is present on the target server, it is likely to be among the returned results. 
 
-##### PowerShell script for Microsoft IIS logs
+#### PowerShell script for Microsoft IIS logs
 The provided [PowerShell script](https://github.com/nsacyber/Mitigating-Web-Shells/blob/master/LogCheck.ps1) will attempt to identify anomalous entries in IIS web server logs that could indicate the presence of a web shell. The script calculates the URIs successfully handled by the server (status code 200-299) which have been requested by the least number of user agents or IP addresses. This analytic will _always_ produce results regardless of whether a web shell is present or not. The URIs in the results should be verified benign. 
 
-###### Requirements
+##### Requirements
 + PowerShell v2 or greater
 + Full Language Mode of PowerShell enabled (see [here](https://devblogs.microsoft.com/powershell/powershell-constrained-language-mode/))
      + This is the default mode for most systems
 + Read access to IIS logs
 
-###### Usage
+##### Usage
 `PS > .\LogCheck.ps1 -logDir "<path to IIS log directory>"`
 
 Example: Scanning logs stored at the default IIS location:
@@ -93,15 +93,15 @@ Example: Scanning logs stored at the default IIS location:
 
 Additionally, the size of the percentile returned can be modified with the ‘-percentile N’ option. The default is to show URIs in the bottom 5 percentile for unique user agent requests and client IP addresses.
 
-##### Python script for Apache httpd logs
-The provided [Python script](https://github.com/nsacyber/Mitigating-Web-Shells/blob/master/checkLogs.py) will attempt to identify anomalous entries in Apache web server logs that could indicate the presence of a web shell. The script calculates the URIs successfully handled by the server (status code 200-299) which have been requested by the least number of user agents or IP addresses. This analytic will _always_ produce results regardless of whether a web shell is present or not. The URIs in the results should be verified benign. 
+#### Python script for Apache httpd logs
+The provided [Python script](https://github.com/nsacyber/Mitigating-Web-Shells/blob/master/LogCheck.py) will attempt to identify anomalous entries in Apache web server logs that could indicate the presence of a web shell. The script calculates the URIs successfully handled by the server (status code 200-299) which have been requested by the least number of user agents or IP addresses. This analytic will _always_ produce results regardless of whether a web shell is present or not. The URIs in the results should be verified benign. 
 
-###### Requirements
+##### Requirements
 + Python 3
 + Read access to Apache logs
 
-###### Usage
-`$ checkLogs.py "<path to Apache log file>"`
+##### Usage
+`$ LogCheck.py "<path to Apache log file>"`
 
 ### Detecting host artifacts of common web shells
 Web shells are easy to modify without losing functionality and can thus be tailored to avoid host base signatures such as file artifacts. In rare cases, web shells may even run entirely in memory (i.e., fileless execution) making file based detection impossible. However, attackers may make little to no modifications to web shells for a variety of reasons. In these cases, it may be possible to detect common web shells using pattern-matching techniques, such as [YARA rules](https://virustotal.github.io/yara/). YARA rules can be imported by a variety of security products or can be run using a standalone [YARA scanning tool](https://github.com/virustotal/yara/releases/tag/v3.11.0). The instructions below assume use of the standalone YARA scanning tool. For other security products, consult documentation or talk to the vendor to determine if YARA is supported.  
