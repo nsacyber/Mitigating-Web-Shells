@@ -18,12 +18,12 @@ System.String
 System.String
 
 .EXAMPLE
-.\dirComparsion.ps1 -knownGood <PATH> -productionImage <PATH>
-.\dirComparsion.ps1 -knownGood .\knownGoodDir\ -productionImage .\targetDir\
-.\dirComparsion.ps1 -knownGood "D:\release3.0" -productionImage "C:\inetpub\wwwroot"
+.\dirChecker.ps1 -knownGood <PATH> -productionImage <PATH>
+.\dirChecker.ps1 -knownGood .\knownGoodDir\ -productionImage .\targetDir\
+.\dirChecker.ps1 -knownGood "D:\release3.0" -productionImage "C:\inetpub\wwwroot"
 
 -- Input --
-.\dirComparsion.ps1 -knownGood "D:\Users\<user>\Documents\knownGoodDir" -productionImage "C:\Users\<user>\Documents\targetDir"
+.\dirChecker.ps1 -knownGood "D:\Users\<user>\Documents\knownGoodDir" -productionImage "C:\Users\<user>\Documents\targetDir"
 
 -- Output --
 File analysis started.
