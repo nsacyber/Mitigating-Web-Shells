@@ -227,7 +227,7 @@ type=SYSCALL msg=audit(1581519503.841:47): arch=c000003e syscall=59 success=yes 
 2. _Analyze the results to determine if unusual applications are launched (see list below)_
 
 3. _Detailed information, including call arguments, can be obtained using_:
-`/var/log/auditd/audit.* | grep "msg=audit(1581519503.841:47)`
+`/var/log/auditd/audit.* | grep "msg=audit(1581519503.841:47)"`
 Replace the valude of msg=audit with the value returned in step #1
 
 ##### Linux applications commonly used by attackers and rarely launched by benign Apache applications
