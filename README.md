@@ -77,7 +77,7 @@ This analytic is likely to produce significant false positives in many environme
 The provided [Splunk queries](https://github.com/nsacyber/Mitigating-Web-Shells/blob/master/anomolous_uris.splunk.txt) can help to identify Uniform Resource Identifiers (URIs) accessed by few User Agents, IP addresses, or using uncommon Referer [sic] headers. Results of these queries are likely to include mostly or entirely benign URIs. However, if a web shell is present on the target server, it is likely to be among the returned results. 
 
 ##### PowerShell script for Microsoft IIS logs
-The provided [PowerShell script](https://github.com/nsacyber/Mitigating-Web-Shells/blob/master/checkLogs.ps1) will attempt to identify anomalous entries in IIS web server logs that could indicate the presence of a web shell. The script calculates the URIs successfully handled by the server (status code 200-299) which have been requested by the least number of user agents or IP addresses. This analytic will _always_ produce results regardless of whether a web shell is present or not. The URIs in the results should be verified benign. 
+The provided [PowerShell script](https://github.com/nsacyber/Mitigating-Web-Shells/blob/master/LogCheck.ps1) will attempt to identify anomalous entries in IIS web server logs that could indicate the presence of a web shell. The script calculates the URIs successfully handled by the server (status code 200-299) which have been requested by the least number of user agents or IP addresses. This analytic will _always_ produce results regardless of whether a web shell is present or not. The URIs in the results should be verified benign. 
 
 ###### Requirements
 + PowerShell v2 or greater
@@ -86,10 +86,10 @@ The provided [PowerShell script](https://github.com/nsacyber/Mitigating-Web-Shel
 + Read access to IIS logs
 
 ###### Usage
-`PS > .\checkLogs.ps1 -logDir "<path to IIS log directory>"`
+`PS > .\LogCheck.ps1 -logDir "<path to IIS log directory>"`
 
 Example: Scanning logs stored at the default IIS location:
-`PS > .\checkLogs.ps1 -logDir "C:\inetpub\logs\"`
+`PS > .\LogCheck.ps1 -logDir "C:\inetpub\logs\"`
 
 Additionally, the size of the percentile returned can be modified with the ‘-percentile N’ option. The default is to show URIs in the bottom 5 percentile for unique user agent requests and client IP addresses.
 
