@@ -132,7 +132,7 @@ Web shells frequently use encryption and encoding to evade network-based detecti
 #### Network signatures for common web shell malware
 The provided [Snort signatures](https://github.com/nsacyber/Mitigating-Web-Shells/blob/master/network_signatures.snort.txt) can be used to detect some common web shells that have not been modified to evade detection. Some intrusion detection/preventions systems and web application firewalls may already implement these or other web shell signatures. Organizations are encouraged to understand their existing network signature posture in this regard. 
 
-### Detecting unpexpected network flows
+### Detecting unexpected network flows
 In some cases, web shell traffic will cause unexpected network flows. For example, if an web shell infected web server is being used proxy requests into a network, then the web server would make web requests to internal network nodes. This behavior is abnormal and could be easily recognized in network activity logs. Another example would be for a non web server node (e.g., a network device) to suddenly be replying to responding to a web requests from outside the network. Administrators should have an intimate knowledge of operated networks and the protocols that nodes should be communicating with. Contradications to these norms should be investigated. 
 
 #### Snort signatures to detect unexpected network flows
