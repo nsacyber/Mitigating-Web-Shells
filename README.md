@@ -17,6 +17,11 @@ This repository houses a number of tools and signatures to help defend networks 
       - [YARA rules for detecting common web shells](#yara-rules-for-detecting-common-web-shells)
     + [Detecting network artifacts of common web shell malware](#detecting-network-artifacts-of-common-web-shell-malware)
       - [Network signatures for common web shell malware](#network-signatures-for-common-web-shell-malware)
+    + [Detecting unpexpected network flows](#detecting-unexpected-network-flows)
+      - [Snort signatures to detect unexpected network flows](#snort-signatures-to-detect-unexpected-network-flows)
+    + [Endpoint Detection and Response (EDR) capabilities](#endpoint-detection-and-response-edr-capabilities)
+      - [Detecting Web Shells in Windows with Sysmon](#detecting-web-shells-in-windows-with-sysmon)
+      - [Detecting Web Shells in Linux with Auditd](#detecting-web-shells-in-linux-with-auditd)
   * [Preventing Web Shells](#preventing-web-shells)
     + [McAfee Host Intrusion Prevention System (HIPS) rules to lock down web directories](#mcafee-host-intrusion-prevention-system--hips--rules-to-lock-down-web-directories)
   * [License](#license)
@@ -126,6 +131,74 @@ Web shells frequently use encryption and encoding to evade network-based detecti
 
 #### Network signatures for common web shell malware
 The provided [Snort signatures](https://github.com/nsacyber/Mitigating-Web-Shells/blob/master/network_signatures.snort.txt) can be used to detect some common web shells that have not been modified to evade detection. Some intrusion detection/preventions systems and web application firewalls may already implement these or other web shell signatures. Organizations are encouraged to understand their existing network signature posture in this regard. 
+
+### Detecting unpexpected network flows
+In some cases, web shell traffic will cause unexpected network flows. For example, if an web shell infected web server is being used proxy requests into a network, then the web server would make web requests to internal network nodes. This behavior is abnormal and could be easily recognized in network activity logs. Another example would be for a non web server node (e.g., a network device) to suddenly be replying to responding to a web requests from outside the network. Administrators should have an intimate knowledge of operated networks and the protocols that nodes should be communicating with. Contradications to these norms should be investigated. 
+
+#### Snort signatures to detect unexpected network flows
+The provided Snort signature can aid administrators in identifying unexepected network flows. This signature simply alerts when a node in the targeted subnet responds to an HTTP(s) request. This signature should be tailored for a specific network by targetting only non-web server nodes. 
+
+`alert tcp 192.168.1.0/24 [443,80] -> any any (msg: "potential unexpected web server"; sid 4000921)`
+
+Note: ensure that the subnet above (192.l68.1.0) is changed to something appropriate for the target subnet
+
+### Endpoint Detection and Response (EDR) capabilities
+Some EDR and enhanced logging solutions may be able to detect web shells based on system call or process lineage abnormalities. These security products monitor each process on the endpoint including invoked system calls. Web shells usually cause the web server process to exhibit unusual behavior. For instance, it is uncommon for most benign web servers to launch the ipconfig utility, but this is a common reconnaissance technique enabled by web shells. EDRs and enhanced logging solutions will have different capabilities, so administrators are encouraged to understand the solutions available for their environment. 
+
+#### Detecting Web Shells in Windows with Sysmon
+Microsoft Sysmon is a logging tool that enhances logging performed on a Windows system. Among other things, Sysmon logs information about how each process is created. This information is valuable for indentifying anomalous behavior, such as in the case of malicious web shells. Sysmon can be [obtained from Microsoft](https://docs.microsoft.com/en-us/sysinternals/downloads/sysmon) and must be installed on a system to begin enhanced logging. Ideally, Sysmon and other Windows logging should be mirrored to a central Security Information and Event Management (SIEM) server where it can be aggregated and queried. 
+
+The query below will report which executables were launched by an IIS web server process. In many cases, the web application will cause IIS to launch a process for entirely benign functionality. However, there are several executables commonly used by attackers for reconaissance purposes, which are unlikely to be used by a normal web application. Some of these executables are listed below.
+
+##### PowerShell script to indentify Sysmon entries for IIS
+`Get-WinEvent -FilterHashtable @{logname="Micorosft-Windows-Sysmon/Operational";id=1;} | 
+Where {$_.message -like "*ParentImage: C:\Windows\System32\inetsrv\w3wp.exe*"} |
+%{$_.properties[4]} |
+Sort-Object -Property value -Unique`
+
+##### Windows executables commonly used by attackers and rarely launched by benign IIS applications
++ arp.exe
++ at.exe
++ bitsadmin.exe
++ certutil.exe
++ cmd.exe
++ dsget.exe
++ dsquery.exe
++ find.exe
++ findstr.exe
++ fsutil.exe
++ hostname.exe
++ ipconfig.exe
++ nbstat.exe
++ net.exe
++ net1.exe
++ netdom.exe
++ netsh.exe
++ netstat.exe
++ nltest.exe
++ nslookup.exe
++ ntdsutil.exe
++ pathping.exe
++ ping.exe
++ powershell.exe
++ qprocess.exe
++ query.exe
++ qwinsta.exe
++ reg.exe
++ rundll32.exe
++ sc.exe
++ schtasks.exe
++ systeminfo.exe
++ tasklist.exe
++ tracert.exe
++ ver.exe
++ vssadmin.exe
++ wevtutil.exe
++ whoami.exe
++ wmic.exe
++ wusa.exe
+
+#### Detecting Web Shells in Linux with Auditd
 
 ## Preventing Web Shells
 ### McAfee Host Intrusion Prevention System (HIPS) rules to lock down web directories
