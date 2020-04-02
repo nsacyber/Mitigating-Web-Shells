@@ -39,17 +39,17 @@ The most effective method of discovering most web shells is to compare files on 
 Microsoft developed a tool called WinDiff that allows file or directory comparison for ASCII files. In most cases, this simple but powerful tool is sufficient for comparing known-good and production images. Details about using this utility are provided by Microsoft [here](https://support.microsoft.com/en-us/help/159214/how-to-use-the-windiff-exe-utility).
 
 #### PowerShell utility for known-good comparison
-The provided [PowerShell script](https://github.com/nsacyber/Mitigating-Web-Shells/blob/master/dirComparsion.ps1) will compare two directories, a known-good version and a production image. The script will report any new or modified files in the production version. If a web shell is in the web application, then it will appear on this report. Because of the high likelihood that benign file changes occurring, each result will need to be vetted for authenticity. 
+The provided [PowerShell script](https://github.com/nsacyber/Mitigating-Web-Shells/blob/master/dirChecker.ps1) will compare two directories, a known-good version and a production image. The script will report any new or modified files in the production version. If a web shell is in the web application, then it will appear on this report. Because of the high likelihood that benign file changes occurring, each result will need to be vetted for authenticity. 
 
 ##### Requirements
 + PowerShell v2 or greater
 + Read access to both the known-good image and the production image
 
 ##### Usage
-`PS > .\dirComparsion.ps1 -knownGood "<PATH>" -productionImage "<PATH>"`
+`PS > .\dirChecker.ps1 -knownGood "<PATH>" -productionImage "<PATH>"`
 
 Example: Scanning default IIS website:
-`PS > .\dirComparsion.ps1 -knownGood .\knownGoodDir\ -productionImage "C:\inetpub\logs\"`
+`PS > .\dirChecker.ps1 -knownGood .\knownGoodDir\ -productionImage "C:\inetpub\logs\"`
 
 
 #### Linux Diff utility for known-good comparison
