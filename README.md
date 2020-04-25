@@ -5,7 +5,7 @@ This repository houses a number of tools and signatures to help defend networks 
 - [Mitigating Web Shells](#mitigating-web-shells)
   * [Background](#background)
   * [Detecting/Blocking Web Shells](#detecting-blocking-web-shells)
-    + ["Known-Good" file comparison](#-known-good--file-comparison)
+    + ["Known-Good" file comparison](#known-good-file-comparison)
       - [WinDiff Application](#windiff-application)
       - [PowerShell utility for known-good comparison](#powershell-utility-for-known-good-comparison)
       - [Linux Diff utility for known-good comparison](#linux-diff-utility-for-known-good-comparison)
