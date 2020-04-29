@@ -1,6 +1,9 @@
 # Mitigating Web Shells
 
-This repository houses a number of tools and signatures to help defend networks against web shell malware. More information about web shells and the analytics used by the tools here is available in [NSA’s web shell mitigation guidance](https://nsa.gov/)
+This repository houses a number of tools and signatures to help defend networks against web shell malware. More information about web shells and the analytics used by the tools here is available in [NSA](https://nsa.gov) and [ASD](https://https://www.asd.gov.au)  web shell mitigation guidance [Detect and Prevent Web Shell Malware](https://media.defense.gov/2020/Apr/22/2002285959/-1/-1/0/DETECT%20AND%20PREVENT%20WEB%20SHELL%20MALWARE.PDF).
+
+* [NSA press release](https://www.nsa.gov/News-Features/News-Stories/Article-View/Article/2159419/detect-prevent-cyber-attackers-from-exploiting-web-servers-via-web-shell-malware/)
+* [ASD press release](https://www.cyber.gov.au/advice/detect-and-prevent-web-shell-malware)
 
 ## Table of Contents
 
@@ -82,7 +85,9 @@ Because they are often designed to blend in with existing web applications, dete
 
 * _User agent HTTP header_: Without an established presence within a network, it is unlikely that an attacker will know which user agent strings are common for a particular web server. Therefore, at a minimum, early web shell access is likely to be performed using a user agent that is uncommon on a target network.
 * _Referrer HTTP header_: For most web applications, each user request is appended with a referrer header indicating the URL from which the user request originated. The major exception to this is root level pages, which are often bookmarked or accessed directly. Attackers may overlook the referrer tag when disguising their web shell traffic. If so, these requests should appear anomalous in web server logs.
-* _IP Addresses_: Depending on the attacker’s tactics and the victim environment, IP addresses used to conduct the attack may appear anomalous. For instance, a web application may primarily be visited by internal users from a particular subnet. However, the attacker may access the web shell malware from an IP address outside the normal subnet. This analytic is likely to produce significant false positives in many environments, so it should be employed cautiously. Additionally, attackers who understand this analytic can easily avoid detection. Therefore, this analytic should only be one part of a broader defense in depth approach to mitigating web shells.
+* _IP Addresses_: Depending on the attacker’s tactics and the victim environment, IP addresses used to conduct the attack may appear anomalous. For instance, a web application may primarily be visited by internal users from a particular subnet. However, the attacker may access the web shell malware from an IP address outside the normal subnet. 
+
+This analytic is likely to produce significant false positives in many environments, so it should be employed cautiously. Additionally, attackers who understand this analytic can easily avoid detection. Therefore, this analytic should only be one part of a broader defense in depth approach to mitigating web shells.
 
 #### Splunk queries for web server logs
 
