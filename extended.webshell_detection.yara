@@ -330,7 +330,7 @@ private rule DodgyStrings
         $ = "ipconfig" fullword nocase
         $ = "kernel32.dll" fullword nocase
         $ = "kingdefacer" nocase
-        $ = "Wireghoul" nocase fullword
+        $ = "htshell" nocase fullword
         $ = "LD_PRELOAD" fullword
         $ = "libpcprofile"  // CVE-2010-3856 local root
         $ = "locus7s" nocase
