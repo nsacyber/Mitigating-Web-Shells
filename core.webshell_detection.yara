@@ -156,7 +156,7 @@ rule suspiciousFunctionality
         description = "Artifacts common to web shells and somewhat rare in benign files"
 
     condition:
-        passwordProtection or hardcoded_urldecode or fopo or eval
+        hardcoded_urldecode or fopo or eval
 }
 
 rule obfuscatedFunctionality
