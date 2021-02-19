@@ -56,7 +56,7 @@ private rule pbot
 private rule generic_jsp
 {
     meta:
-        source = "https://www.tenable.com/blog/hunting-for-web-shells"
+        source= "https://www.tenable.com/blog/hunting-for-web-shells"
 
     strings:
         $ = /Runtime.getRuntime\(\).exec\(request.getParameter\(\"[a-zA-Z0-9]+\"\)\);/ ascii
@@ -166,5 +166,15 @@ rule obfuscatedFunctionality
         description = "Obfuscation sometimes hides malicious functionality"
 
     condition:
-        chr_obfuscation
+        ObfuscatedPhp or chr_obfuscation or SuspiciousEncoding
+}
+
+rule possibleIndicator
+{
+    meta:
+        author = "NSA Cybersecurity"
+        description = "Artifacts common to web shells and less common in benign files"
+
+    condition:
+        DodgyPhp or DangerousPhp or DodgyStrings
 }
