@@ -166,6 +166,6 @@ rule obfuscatedFunctionality
         description = "Obfuscation sometimes hides malicious functionality"
 
     condition:
-        chr_obfuscation or SuspiciousEncoding
+        chr_obfuscation
 }
 

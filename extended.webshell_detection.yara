@@ -5,7 +5,6 @@
     ADDITIONAL WARNING: These extended rules are EXPECTED to have some false positives. These rules rely on detecting suspicious indicators that are often present in web shell malware but may also occur within benign files. 
 */
 
-
 private rule b374k
 {
     meta:
