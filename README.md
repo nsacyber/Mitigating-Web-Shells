@@ -303,7 +303,7 @@ HIPS File integrity rules can be added to HBSS through the ePolicy Orchestrator 
 
 ## Recent Examples
 
-### SUNBUSRT
+### SUNBURST
 
 Text
 
