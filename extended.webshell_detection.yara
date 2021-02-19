@@ -606,11 +606,7 @@ rule sunburstArtifacts
         description = "Artifacts common to the SUNBURST backdoor."
 
     condition:
-        APT_Backdoor_MSIL_SUNBURST_1 or 
-        APT_Backdoor_MSIL_SUNBURST_2 or 
-        APT_Backdoor_MSIL_SUNBURST_3 or 
-        APT_Backdoor_MSIL_SUNBURST_4 or 
-        APT_Backdoor_MSIL_SUNBURST_5
+        APT_Backdoor_MSIL_SUNBURST_1 or APT_Backdoor_MSIL_SUNBURST_2 or APT_Backdoor_MSIL_SUNBURST_3 or APT_Backdoor_MSIL_SUNBURST_4
 }
 
 private rule APT_Dropper_Raw64_TEARDROP_1
@@ -652,6 +648,5 @@ rule teardropArtifacts
         description = "Artifacts common to the TEARDROP backdoor."
 
     condition:
-        APT_Dropper_Win64_TEARDROP_1 or 
-        APT_Dropper_Win64_TEARDROP_2
+        APT_Dropper_Win64_TEARDROP_1 or APT_Dropper_Win64_TEARDROP_2
 }
