@@ -169,12 +169,3 @@ rule obfuscatedFunctionality
         ObfuscatedPhp or chr_obfuscation or SuspiciousEncoding
 }
 
-rule possibleIndicator
-{
-    meta:
-        author = "NSA Cybersecurity"
-        description = "Artifacts common to web shells and less common in benign files"
-
-    condition:
-        DodgyPhp or DangerousPhp or DodgyStrings
-}
