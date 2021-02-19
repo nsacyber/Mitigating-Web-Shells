@@ -629,7 +629,7 @@ private rule APT_Dropper_Win64_TEARDROP_2
     meta:
         author = "FireEye"
         description = "This rule is intended match specific sequences of opcode found within TEARDROP, including those that decode the embedded payload. TEARDROP is a memory only dropper that can read files and registry keys, XOR decode an embedded payload, and load the payload into memory. TEARDROP persists as a Windows service and has been observed dropping Cobalt Strike BEACON into memory."
-        source = "https://github.com/fireeye/sunburst_countermeasures/blob/main/rules/TEARDROP/yara/APT_Dropper_Raw64_TEARDROP_2.yar"
+        source = "https://github.com/fireeye/sunburst_countermeasures/blob/main/rules/TEARDROP/yara/APT_Dropper_Win64_TEARDROP_2.yar"
     
     strings:
         $loc_4218FE24A5 = { 48 89 C8 45 0F B6 4C 0A 30 }
@@ -648,5 +648,5 @@ rule teardropArtifacts
         description = "Artifacts common to the TEARDROP backdoor."
 
     condition:
-        APT_Dropper_Win64_TEARDROP_1 or APT_Dropper_Win64_TEARDROP_2
+        APT_Dropper_Raw64_TEARDROP_1 or APT_Dropper_Win64_TEARDROP_2
 }
