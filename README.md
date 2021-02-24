@@ -29,9 +29,6 @@ This repository houses a number of tools and signatures to help defend networks 
       * [Detecting Web Shells in Linux with Auditd](#detecting-web-shells-in-linux-with-auditd)
   * [Preventing Web Shells](#preventing-web-shells)
     * [McAfee Host Intrusion Prevention System (HIPS) rules to lock down web directories](#mcafee-host-intrusion-prevention-system--hips--rules-to-lock-down-web-directories)
-  * Recent Examples
-    * [SUNBURST](#sunburst)
-    * [TEARDROP](#teardrop)
   * [License](#license)
   * [Contributing](#contributing)
   * [Disclaimer](#disclaimer)
@@ -300,16 +297,6 @@ Web shells almost always rely on modifying existing web application files or cre
 #### Usage
 
 HIPS File integrity rules can be added to HBSS through the ePolicy Orchestrator portal. Before adding the rules, administrators should tailor them the target environment. This is initially done by modifying the "Include" path to target one or more web applications. Then exceptions to the rule can be added on the signature page under the exception rule tab. Exceptions should include things like allowed file extensions of benign file types that the target web application is required to handle (e.g., ".pdf", ".jpg", ".png"). HIPS rules should be added as an Informational alert (Level 1) for logging purposes to help administrators identify possible exceptions to the rule. Once administrators are confident that exceptions have been added, the rule(s) should be changed to Level 4 to block file changes.
-
-## Recent Examples
-
-### SUNBURST
-
-Text
-
-### TEARDROP
-
-Text
 
 ## License
 
