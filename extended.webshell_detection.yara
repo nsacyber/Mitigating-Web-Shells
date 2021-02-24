@@ -599,16 +599,6 @@ private rule APT_Backdoor_MSIL_SUNBURST_4
         (uint16(0) == 0x5A4D and uint32(uint32(0x3C)) == 0x00004550) and all of them
 }
 
-rule sunburstArtifacts
-{
-    meta:
-        author = "NSA Cybersecurity"
-        description = "Artifacts common to the SUNBURST backdoor."
-
-    condition:
-        APT_Backdoor_MSIL_SUNBURST_1 or APT_Backdoor_MSIL_SUNBURST_2 or APT_Backdoor_MSIL_SUNBURST_3 or APT_Backdoor_MSIL_SUNBURST_4
-}
-
 private rule APT_Dropper_Raw64_TEARDROP_1
 {
     meta:
@@ -641,12 +631,43 @@ private rule APT_Dropper_Win64_TEARDROP_2
         (uint16(0) == 0x5A4D and uint32(uint32(0x3C)) == 0x00004550) and any of them
 }
 
-rule teardropArtifacts
+import "pe"
+private rule SentinelLabs_SUPERNOVA
+{
+	meta:
+		description = "Identifies potential versions of App_Web_logoimagehandler.ashx.b6031896.dll weaponized with SUPERNOVA"
+		date = "2020-12-22"
+		author = "SentinelLabs"
+        source = "https://labs.sentinelone.com/solarwinds-understanding-detecting-the-supernova-webshell-trojan/"
+        
+	strings:
+		$ = "clazz"
+		$ = "codes"
+		$ = "args"
+		$ = "ProcessRequest"
+		$ = "DynamicRun"
+		$ = "get_IsReusable"
+		$ = "logoimagehandler.ashx" wide
+		$ = "SiteNoclogoImage" wide
+		$ = "SitelogoImage" wide
+
+	condition:
+		(uint16(0) == 0x5A4D and uint32(uint32(0x3C)) == 0x00004550 and pe.imports("mscoree.dll")) and all of them
+
+}
+
+rule SolarWindsArtifacts
 {
     meta:
         author = "NSA Cybersecurity"
-        description = "Artifacts common to the TEARDROP backdoor."
+        description = "Artifacts common to the SolarWinds compromise."
 
     condition:
-        APT_Dropper_Raw64_TEARDROP_1 or APT_Dropper_Win64_TEARDROP_2
+        APT_Backdoor_MSIL_SUNBURST_1 
+        or APT_Backdoor_MSIL_SUNBURST_2 
+        or APT_Backdoor_MSIL_SUNBURST_3 
+        or APT_Backdoor_MSIL_SUNBURST_4 
+        or APT_Dropper_Raw64_TEARDROP_1 
+        or APT_Dropper_Win64_TEARDROP_2
+        or SentinelLabs_SUPERNOVA
 }
