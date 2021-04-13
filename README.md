@@ -1,6 +1,6 @@
 # Mitigating Web Shells
 
-This repository houses a number of tools and signatures to help defend networks against web shell malware. More information about web shells and the analytics used by the tools here is available in [NSA](https://www.nsa.gov/) and [ASD](https://https://www.asd.gov.au)  web shell mitigation guidance [Detect and Prevent Web Shell Malware](https://media.defense.gov/2020/Jun/09/2002313081/-1/-1/0/CSI-DETECT-AND-PREVENT-WEB-SHELL-MALWARE-20200422.PDF).
+This repository houses a number of tools and signatures to help defend networks against web shell malware. More information about web shells and the analytics used by the tools here is available in [NSA](https://www.nsa.gov/) and [ASD](https://www.asd.gov.au)  web shell mitigation guidance [Detect and Prevent Web Shell Malware](https://media.defense.gov/2020/Jun/09/2002313081/-1/-1/0/CSI-DETECT-AND-PREVENT-WEB-SHELL-MALWARE-20200422.PDF).
 
 * [NSA press release](https://www.nsa.gov/News-Features/Feature-Stories/Article-View/Article/2159419/detect-prevent-cyber-attackers-from-exploiting-web-servers-via-web-shell-malware/)
 * [ASD press release](https://www.cyber.gov.au/advice/detect-and-prevent-web-shell-malware)
