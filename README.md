@@ -29,6 +29,7 @@ This repository houses a number of tools and signatures to help defend networks 
       * [Detecting Web Shells in Linux with Auditd](#detecting-web-shells-in-linux-with-auditd)
   * [Preventing Web Shells](#preventing-web-shells)
     * [McAfee Host Intrusion Prevention System (HIPS) rules to lock down web directories](#mcafee-host-intrusion-prevention-system--hips--rules-to-lock-down-web-directories)
+  * [Related Content](#related-content)
   * [License](#license)
   * [Contributing](#contributing)
   * [Disclaimer](#disclaimer)
@@ -297,6 +298,14 @@ Web shells almost always rely on modifying existing web application files or cre
 #### Usage
 
 HIPS File integrity rules can be added to HBSS through the ePolicy Orchestrator portal. Before adding the rules, administrators should tailor them the target environment. This is initially done by modifying the "Include" path to target one or more web applications. Then exceptions to the rule can be added on the signature page under the exception rule tab. Exceptions should include things like allowed file extensions of benign file types that the target web application is required to handle (e.g., ".pdf", ".jpg", ".png"). HIPS rules should be added as an Informational alert (Level 1) for logging purposes to help administrators identify possible exceptions to the rule. Once administrators are confident that exceptions have been added, the rule(s) should be changed to Level 4 to block file changes.
+
+## Related Content
+
+| Date | Press Release | Report |
+| :--------- | :-- | :-- |
+| 2021-07-01 | [NSA, Partners Release Cybersecurity Advisory on Brute Force Global Cyber Campaign](https://www.nsa.gov/news-features/press-room/Article/2677750/nsa-partners-release-cybersecurity-advisory-on-brute-force-global-cyber-campaign/) | [CSA: Russian GRU Conducting Global Brute Force Campaign to Compromise Enterprise and Cloud Environments](https://media.defense.gov/2021/Jul/01/2002753896/-1/-1/1/CSA_GRU_GLOBAL_BRUTE_FORCE_CAMPAIGN_UOO158036-21.PDF) |
+| 2021-05-07 | [NSA CISA, FBI, and the UK NCSC further expose Russian Intelligence Cyber Tactics](https://www.nsa.gov/news-features/press-room/Article/2599239/nsa-cisa-fbi-and-the-uk-ncsc-further-expose-russian-intelligence-cyber-tactics/)  | [CSA: Further TTPs associated with SVR cyber actors](https://media.defense.gov/2021/May/07/2002637232/-1/-1/0/ADVISORY%20FURTHER%20TTPS%20ASSOCIATED%20WITH%20SVR%20CYBER%20ACTORS.PDF) |
+| 2021-04-15 | n/a  | [CSA: Russian SVR Targets U.S. and Allied Networks](https://media.defense.gov/2021/Apr/15/2002621240/-1/-1/0/CSA_SVR_TARGETS_US_ALLIES_UOO13234021.PDF) |
 
 ## License
 
