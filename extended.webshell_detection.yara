@@ -675,7 +675,7 @@ rule SolarWindsArtifacts
         or SentinelLabs_SUPERNOVA
 }
 
-rule reGeorg_Variant_Web shell {
+rule reGeorg_Variant_Web_shell {
     meta:
         description = "Matches the reGeorg variant web shell used by the actors."
         date = "2021-07-01"
@@ -683,8 +683,7 @@ rule reGeorg_Variant_Web shell {
         source = "https://media.defense.gov/2021/Jul/01/2002753896/-1/-1/1/CSA_GRU_GLOBAL_BRUTE_FORCE_CAMPAIGN_UOO158036-21.PDF"
         
     strings:
-        $pageLanguage = "<%@ Page Language=\"C#\""U/OO/158036-21 | PP-21-0782 | JUL 2021 Ver. 1.0 7
-        NSA, CISA, FBI, & NCSC | Russian GRU Conducting Global Brute Force Campaign
+        $pageLanguage = "<%@ Page Language=\"C#\""
         $obfuscationFunction = "StrTr"
         $target = "target_str"
         $IPcomms = "System.Net.IPEndPoint"
