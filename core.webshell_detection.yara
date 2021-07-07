@@ -314,25 +314,25 @@ private rule APT_Dropper_Win64_TEARDROP_2
 import "pe"
 private rule SentinelLabs_SUPERNOVA
 {
-	meta:
-		description = "Identifies potential versions of App_Web_logoimagehandler.ashx.b6031896.dll weaponized with SUPERNOVA"
-		date = "2020-12-22"
-		author = "SentinelLabs"
+    meta:
+        description = "Identifies potential versions of App_Web_logoimagehandler.ashx.b6031896.dll weaponized with SUPERNOVA"
+        date = "2020-12-22"
+        author = "SentinelLabs"
         source = "https://labs.sentinelone.com/solarwinds-understanding-detecting-the-supernova-webshell-trojan/"
         
-	strings:
-		$ = "clazz"
-		$ = "codes"
-		$ = "args"
-		$ = "ProcessRequest"
-		$ = "DynamicRun"
-		$ = "get_IsReusable"
-		$ = "logoimagehandler.ashx" wide
-		$ = "SiteNoclogoImage" wide
-		$ = "SitelogoImage" wide
+    strings:
+        $ = "clazz"
+        $ = "codes"
+        $ = "args"
+        $ = "ProcessRequest"
+        $ = "DynamicRun"
+        $ = "get_IsReusable"
+        $ = "logoimagehandler.ashx" wide
+        $ = "SiteNoclogoImage" wide
+        $ = "SitelogoImage" wide
 
-	condition:
-		(uint16(0) == 0x5A4D and uint32(uint32(0x3C)) == 0x00004550 and pe.imports("mscoree.dll")) and all of them
+    condition:
+        (uint16(0) == 0x5A4D and uint32(uint32(0x3C)) == 0x00004550 and pe.imports("mscoree.dll")) and all of them
 }
 
 rule SolarWindsArtifacts
@@ -349,4 +349,24 @@ rule SolarWindsArtifacts
         or APT_Dropper_Raw64_TEARDROP_1 
         or APT_Dropper_Win64_TEARDROP_2
         or SentinelLabs_SUPERNOVA
+}
+
+rule reGeorg_Variant_Web shell {
+    meta:
+        description = "Matches the reGeorg variant web shell used by the actors."
+        date = "2021-07-01"
+        author = "National Security Agency"
+        source = "https://media.defense.gov/2021/Jul/01/2002753896/-1/-1/1/CSA_GRU_GLOBAL_BRUTE_FORCE_CAMPAIGN_UOO158036-21.PDF"
+        
+    strings:
+        $pageLanguage = "<%@ Page Language=\"C#\""U/OO/158036-21 | PP-21-0782 | JUL 2021 Ver. 1.0 7
+        NSA, CISA, FBI, & NCSC | Russian GRU Conducting Global Brute Force Campaign
+        $obfuscationFunction = "StrTr"
+        $target = "target_str"
+        $IPcomms = "System.Net.IPEndPoint"
+        $addHeader = "Response.AddHeader"
+        $socket = "Socket"
+        
+    condition:
+        5 of them
 }
