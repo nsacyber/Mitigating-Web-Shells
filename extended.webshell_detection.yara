@@ -59,7 +59,7 @@ private rule passwordProtection
 {
     meta:
         source = "https://github.com/nbs-system/php-malware-finder"
-		
+        
     strings:
         $md5 = /md5\s*\(\s*\$_(GET|REQUEST|POST|COOKIE|SERVER)[^)]+\)\s*===?\s*['"][0-9a-f]{32}['"]/ nocase
         $sha1 = /sha1\s*\(\s*\$_(GET|REQUEST|POST|COOKIE|SERVER)[^)]+\)\s*===?\s*['"][0-9a-f]{40}['"]/ nocase
@@ -71,7 +71,7 @@ private rule ObfuscatedPhp
 {
     meta:
         source = "https://github.com/nbs-system/php-malware-finder"
-		
+        
     strings:
         $eval = /(<\?php|[;{}])[ \t]*@?(eval|preg_replace|system|assert|passthru|(pcntl_)?exec|shell_exec|call_user_func(_array)?)\s*\(/ nocase  // ;eval( <- this is dodgy
         $eval_comment = /(eval|preg_replace|system|assert|passthru|(pcntl_)?exec|shell_exec|call_user_func(_array)?)\/\*[^\*]*\*\/\(/ nocase  // eval/*lol*/( <- this is dodgy
@@ -95,7 +95,7 @@ private rule DodgyPhp
 {
     meta:
         source = "https://github.com/nbs-system/php-malware-finder"
-		
+        
     strings:
         $basedir_bypass = /curl_init\s*\(\s*["']file:\/\// nocase
         $basedir_bypass2 = "file:file:///" // https://www.intelligentexploit.com/view-details.html?id=8719
@@ -118,7 +118,7 @@ private rule DodgyPhp
         $double_var = /\${\s*\${/
         $extract = /extract\s*\(\s*\$_(GET|POST|REQUEST|COOKIE|SERVER)/
         $reversed = /noitcnuf_etaerc|metsys|urhtssap|edulcni|etucexe_llehs/ nocase
-				$silenced_include =/@\s*include\s*/ nocase
+                $silenced_include =/@\s*include\s*/ nocase
 
     condition:
         (any of them)
@@ -128,7 +128,7 @@ private rule DangerousPhp
 {
     meta:
         source = "https://github.com/nbs-system/php-malware-finder"
-		
+        
     strings:
         $system = "system" fullword nocase  // localroot bruteforcers have a lot of this
 
@@ -191,7 +191,7 @@ private rule IRC
 {
     meta:
         source = "https://github.com/nbs-system/php-malware-finder"
-		
+        
     strings:
         $ = "USER" fullword nocase
         $ = "PASS" fullword nocase
@@ -210,7 +210,7 @@ private rule base64_strings
 {
     meta:
         source = "https://github.com/nbs-system/php-malware-finder"
-		
+        
     strings:
         $user_agent = "SFRUUF9VU0VSX0FHRU5UCg"
         $eval = "ZXZhbCg"
@@ -230,7 +230,7 @@ private rule hex
 {
     meta:
         source = "https://github.com/nbs-system/php-malware-finder"
-		
+        
     strings:
         $globals = "\\x47\\x4c\\x4f\\x42\\x41\\x4c\\x53" nocase
         $eval = "\\x65\\x76\\x61\\x6C\\x28" nocase
@@ -248,9 +248,9 @@ private rule Hpack
 {
     meta:
         source = "https://github.com/nbs-system/php-malware-finder"
-		
+        
     strings:
-		$globals = "474c4f42414c53" nocase
+        $globals = "474c4f42414c53" nocase
         $eval = "6576616C28" nocase
         $exec = "65786563" nocase
         $system = "73797374656d" nocase
@@ -265,7 +265,7 @@ private rule strrev
 {
     meta:
         source = "https://github.com/nbs-system/php-malware-finder"
-		
+        
     strings:
         $globals = "slabolg" nocase fullword
         $preg_replace = "ecalper_gerp" nocase fullword
@@ -281,7 +281,7 @@ private rule SuspiciousEncoding
 {
     meta:
         source = "https://github.com/nbs-system/php-malware-finder"
-		
+        
     condition:
         (base64_strings or hex or strrev or Hpack)
 }
@@ -290,7 +290,7 @@ private rule DodgyStrings
 {
     meta:
         source = "https://github.com/nbs-system/php-malware-finder"
-		
+        
     strings:
         $ = ".bash_history"
         $ = "404 not found" nocase
@@ -638,25 +638,25 @@ private rule APT_Dropper_Win64_TEARDROP_2
 import "pe"
 private rule SentinelLabs_SUPERNOVA
 {
-	meta:
-		description = "Identifies potential versions of App_Web_logoimagehandler.ashx.b6031896.dll weaponized with SUPERNOVA"
-		date = "2020-12-22"
-		author = "SentinelLabs"
+    meta:
+        description = "Identifies potential versions of App_Web_logoimagehandler.ashx.b6031896.dll weaponized with SUPERNOVA"
+        date = "2020-12-22"
+        author = "SentinelLabs"
         source = "https://labs.sentinelone.com/solarwinds-understanding-detecting-the-supernova-webshell-trojan/"
         
-	strings:
-		$ = "clazz"
-		$ = "codes"
-		$ = "args"
-		$ = "ProcessRequest"
-		$ = "DynamicRun"
-		$ = "get_IsReusable"
-		$ = "logoimagehandler.ashx" wide
-		$ = "SiteNoclogoImage" wide
-		$ = "SitelogoImage" wide
+    strings:
+        $ = "clazz"
+        $ = "codes"
+        $ = "args"
+        $ = "ProcessRequest"
+        $ = "DynamicRun"
+        $ = "get_IsReusable"
+        $ = "logoimagehandler.ashx" wide
+        $ = "SiteNoclogoImage" wide
+        $ = "SitelogoImage" wide
 
-	condition:
-		(uint16(0) == 0x5A4D and uint32(uint32(0x3C)) == 0x00004550 and pe.imports("mscoree.dll")) and all of them
+    condition:
+        (uint16(0) == 0x5A4D and uint32(uint32(0x3C)) == 0x00004550 and pe.imports("mscoree.dll")) and all of them
 }
 
 rule SolarWindsArtifacts
@@ -673,4 +673,23 @@ rule SolarWindsArtifacts
         or APT_Dropper_Raw64_TEARDROP_1 
         or APT_Dropper_Win64_TEARDROP_2
         or SentinelLabs_SUPERNOVA
+}
+
+rule reGeorg_Variant_Web_shell {
+    meta:
+        description = "Matches the reGeorg variant web shell used by the actors."
+        date = "2021-07-01"
+        author = "National Security Agency"
+        source = "https://media.defense.gov/2021/Jul/01/2002753896/-1/-1/1/CSA_GRU_GLOBAL_BRUTE_FORCE_CAMPAIGN_UOO158036-21.PDF"
+        
+    strings:
+        $pageLanguage = "<%@ Page Language=\"C#\""
+        $obfuscationFunction = "StrTr"
+        $target = "target_str"
+        $IPcomms = "System.Net.IPEndPoint"
+        $addHeader = "Response.AddHeader"
+        $socket = "Socket"
+        
+    condition:
+        5 of them
 }
