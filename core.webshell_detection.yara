@@ -40,9 +40,9 @@ private rule 22_byte_webshell
     
     strings:
         $p1 = "<?=$_GET[a-zA-Z]($_GET[a-zA-Z]);"
-        $p1 = "<?=$_POST[a-zA-Z]($_GET[a-zA-Z]);"
-        $p1 = "<?=$POST[a-zA-Z]($POST[a-zA-Z]);"
-        $p1 = "<?=$_GET[a-zA-Z]($_POST[a-zA-Z]);"
+        $p2 = "<?=$_POST[a-zA-Z]($_GET[a-zA-Z]);"
+        $p3 = "<?=$POST[a-zA-Z]($POST[a-zA-Z]);"
+        $p4 = "<?=$_GET[a-zA-Z]($_POST[a-zA-Z]);"
 
     condition:
         1 of them
