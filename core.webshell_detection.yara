@@ -16,6 +16,37 @@ private rule b374k
     condition:
         any of them
 }
+private rule webadmin.php
+{
+    meta:
+        author = "Berk Dusunur @berkdusunur"
+        description = "This rule is checking webadmin.php webshell."
+    
+    strings:
+        $p1 = "return base64_decode('R0lGODlhEQANAJEDAJmZmf///wAAAP///yH5BAHoAwMALAAAAAARAA0AAAItnIGJxg0B42rsiSvCA/REmXQWhmnih3LUSGaqg35vFbSXucbSabunjnMohq8CADsA');"
+        $p2 = "return base64_decode('R0lGODlhEQANAJEDAJmZmf///8zMzP///yH5BAHoAwMALAAAAAARAA0AAAIqnI+ZwKwbYgTPtIudlbwLOgCBQJYmCYrn+m3smY5vGc+0a7dhjh7ZbygAADsA');"
+        $p3 = "return base64_decode('R0lGODlhEQANAJEDAMwAAP///5mZmf///yH5BAHoAwMALAAAAAARAA0AAAItnIGJxg0B42rsiSvCA/REmXQWhmnih3LUSGaqg35vFbSXucbSabunjnMohq8CADsA');"
+
+    condition:
+        1 of them
+        }
+
+
+private rule 22_byte_webshell
+{
+    meta:
+        author = "Berk Dusunur @berkdusunur"
+        description = "This rule is checking 22 byte webshell."
+    
+    strings:
+        $p1 = "<?=$_GET[a-zA-Z]($_GET[a-zA-Z]);"
+        $p1 = "<?=$_POST[a-zA-Z]($_GET[a-zA-Z]);"
+        $p1 = "<?=$POST[a-zA-Z]($POST[a-zA-Z]);"
+        $p1 = "<?=$_GET[a-zA-Z]($_POST[a-zA-Z]);"
+
+    condition:
+        1 of them
+        }
 
 private rule pas_tool
 {
