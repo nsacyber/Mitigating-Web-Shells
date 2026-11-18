@@ -149,8 +149,8 @@ Administrators should prioritize vetting results from the core rules before inve
 
 `> .\yara64.exe -r -C <yara file> <path to web directory>`
 
-Example: Scanning default IIS web directories using the base ruleset
-`> .\yara64.exe -r -C base.yara.bin C:\inetpub\wwwroot\`
+Example: Scanning default IIS web directories using the core ruleset
+`> .\yara64.exe -r -C core.yara.bin C:\inetpub\wwwroot\`
 
 Example: Scanning default Apache web directories using the extended ruleset
 `$ yara -r extended.yara.bin /var/www/html/`
@@ -187,7 +187,7 @@ The query below will report executables launched by an IIS web server process. I
 
 ##### PowerShell script to identify Sysmon entries for IIS
 
-`Get-WinEvent -FilterHashtable @{logname="Micorosft-Windows-Sysmon/Operational";id=1;} |
+`Get-WinEvent -FilterHashtable @{logname="Microsoft-Windows-Sysmon/Operational";id=1;} |
 Where {$_.message -like "*ParentImage: C:\Windows\System32\inetsrv\w3wp.exe*"} |
 %{$_.properties[4]} |
 Sort-Object -Property value -Unique`

@@ -1,6 +1,6 @@
 /*
     WARNING: Host-based security systems may DETECT this file as malicious!
-    Because the text used in these signatures is also used in some malware definitions, this file may be detected as malicious. If this happens, it is recommended that the limited.yara.bin file be used instead. Because limited.yara.bin is a compiled yara ruleset, it is unlikely to trigger host-based security systems
+    Because the text used in these signatures is also used in some malware definitions, this file may be detected as malicious. If this happens, it is recommended that the core.yara.bin file be used instead. Because core.yara.bin is a compiled yara ruleset, it is unlikely to trigger host-based security systems
 */
 
 private rule b374k
