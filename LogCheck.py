@@ -32,7 +32,8 @@ def analyze_weblog(filename):
         for row in csv_reader:
      
             # handles simple case where file has comments start with #     
-            if (row[0][0] != '#'):        
+            # also skips blank lines and lines with fewer fields than expected
+            if (len(row) >= len(apachelogsfields) and row[0][:1] != '#'):
                                                                     # extract only fields of interest from the web log
                ipaddress = row[apachelogsfields.index('ip')]        # ip address     
                request = row[apachelogsfields.index('request')]     # request (URL part of request) 
